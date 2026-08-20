@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Admin | Race Química</title>
+  <link rel="icon" type="image/png" href="assets/img/favicon.png">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <main class="admin-shell">
+    <section class="login-view" id="login-view">
+      <div class="login-card">
+        <img src="assets/img/logo.png" alt="Race Química">
+        <p class="eyebrow">Área administrativa</p>
+        <h1>Controle do site Race Química</h1>
+        <p>Atualize catálogo, imagens, galeria e vídeo de apresentação sem mexer no código.</p>
+        <form id="login-form">
+          <label>Usuário<input name="username" autocomplete="username" required></label>
+          <label>Senha<input name="password" type="password" autocomplete="current-password" required></label>
+          <button type="submit">Entrar no painel</button>
+        </form>
+        <small>Login inicial local: admin / Race@2026</small>
+      </div>
+    </section>
+
+    <section class="dashboard hidden" id="dashboard">
+      <aside class="sidebar">
+        <img src="assets/img/logo.png" alt="Race Química">
+        <nav>
+          <button class="nav-tab is-active" data-tab="overview">Visão geral</button>
+          <button class="nav-tab" data-tab="products">Catálogo</button>
+          <button class="nav-tab" data-tab="media">Mídia</button>
+          <button class="nav-tab" data-tab="settings">Publicação</button>
+        </nav>
+        <a href="/" target="_blank" rel="noopener">Abrir site</a>
+        <button id="logout">Sair</button>
+      </aside>
+
+      <div class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Race Química</p>
+            <h1>Painel de conteúdo</h1>
+          </div>
+          <div class="status-card">
+            <span id="api-status">Conectando...</span>
+            <strong id="storage-mode">Local / Supabase</strong>
+          </div>
+        </header>
+
+        <section class="tab-panel is-active" data-panel="overview">
+          <div class="stats-grid">
+            <article><span id="stat-products">0</span><p>produtos cadastrados</p></article>
+            <article><span id="stat-active">0</span><p>ativos no site</p></article>
+            <article><span id="stat-gallery">0</span><p>fotos na galeria</p></article>
+            <article><span id="stat-video">Não</span><p>vídeo publicado</p></article>
+          </div>
+          <section class="panel hero-admin">
+            <div>
+              <p class="eyebrow">Operação</p>
+              <h2>Conteúdo pronto para Netlify + Supabase</h2>
+              <p>O painel usa as mesmas rotas `/api/*`. Localmente elas passam pelo Express/SQLite; no Netlify elas podem passar pelas Functions conectadas ao Supabase.</p>
+            </div>
+            <div class="quick-actions">
+              <button data-jump="products">Adicionar produto</button>
+              <button data-jump="media">Adicionar foto</button>
+              <a href="/admin.html" target="_blank" rel="noopener">Recarregar painel</a>
+            </div>
+          </section>
+          <section class="panel">
+            <div class="panel-title">
+              <div>
+                <p class="eyebrow">Diagnóstico</p>
+                <h2>Saúde da integração</h2>
+              </div>
+              <button id="refresh-health" class="muted-button">Atualizar teste</button>
+            </div>
+            <div class="health-grid" id="health-grid">
+              <article class="health-card">
+                <strong>Conectando</strong>
+                <p>Aguardando resposta da API.</p>
+              </article>
+            </div>
+          </section>
+        </section>
+
+        <section class="tab-panel" data-panel="products">
+          <section class="panel">
+            <div class="panel-title">
+              <div>
+                <p class="eyebrow">Catálogo</p>
+                <h2>Produtos do site</h2>
+              </div>
+              <button id="clear-product">Novo produto</button>
+            </div>
+            <form id="product-form" class="editor-form">
+              <input type="hidden" name="id">
+              <div class="field-grid">
+                <label>Nome do produto<input name="name" placeholder="Ex.: Polímero Aniônico" required></label>
+                <label>Ordem<input name="sort_order" type="number" min="0" value="1"></label>
+              </div>
+              <label>Descrição<textarea name="description" placeholder="Descrição comercial e técnica do produto" required></textarea></label>
+              <div class="field-grid">
+                <label>Foto do produto<input name="image" type="file" accept="image/*"></label>
+                <label class="switch"><input name="active" type="checkbox" checked><span></span> Produto ativo no site</label>
+              </div>
+              <div class="preview-row">
+                <img id="product-preview" alt="Preview do produto">
+                <p>Use fotos reais de produto, laboratório, aplicação ou processo industrial. O ideal é imagem horizontal, bem iluminada e sem texto por cima.</p>
+              </div>
+              <button type="submit">Salvar produto</button>
+            </form>
+          </section>
+          <div class="admin-list" id="products-list"></div>
+        </section>
+
+        <section class="tab-panel" data-panel="media">
+          <section class="panel">
+            <p class="eyebrow">Apresentação</p>
+            <h2>Vídeo institucional</h2>
+            <form id="video-form" class="inline-form">
+              <input name="videoUrl" placeholder="Cole aqui o link do YouTube ou embed">
+              <button type="submit">Salvar vídeo</button>
+            </form>
+          </section>
+
+          <section class="panel">
+            <p class="eyebrow">Galeria</p>
+            <h2>Fotos do site</h2>
+            <form id="gallery-form" class="editor-form">
+              <label>Título da foto<input name="title" placeholder="Ex.: Tratamento de efluentes"></label>
+              <label>Imagem<input name="image" type="file" accept="image/*" required></label>
+              <div class="preview-row">
+                <img id="gallery-preview" alt="Preview da galeria">
+                <p>Adicione fotos de instalações, produtos, equipe técnica, laboratório e aplicações em campo.</p>
+              </div>
+              <button type="submit">Adicionar foto</button>
+            </form>
+          </section>
+          <div class="photo-list" id="gallery-list"></div>
+        </section>
+
+        <section class="tab-panel" data-panel="settings">
+          <section class="panel">
+            <p class="eyebrow">Deploy</p>
+            <h2>Configuração para Netlify e Supabase</h2>
+            <div class="deploy-list">
+              <article><strong>Netlify</strong><p>Use `npm run build` e publique a pasta raiz. O `netlify.toml` redireciona `/api/*` para Functions.</p></article>
+              <article><strong>Supabase</strong><p>Crie as tabelas do arquivo `supabase/schema.sql` e o bucket público `racequimica` para imagens.</p></article>
+              <article><strong>Variáveis</strong><p>Configure `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `ADMIN_USER`, `ADMIN_PASSWORD` e `SESSION_SECRET` no Netlify.</p></article>
+            </div>
+          </section>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status"></div>
+  <script src="js/admin.js"></script>
+</body>
+</html>
